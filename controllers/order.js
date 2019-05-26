@@ -103,12 +103,12 @@ function getOrderById () {
 }
 function getShortDetails () {
   return asyncF(async (req, res) => {
-    let value = await cache.checkCache(req.originalUrl)
-    if (value !== null) {
-      return res.json(value.data).status(constants.NETWORK_CODES.HTTP_SUCCESS)
-    }
-
-    let order = getOrderDetails(req.param.order_id)
+    // let value = await cache.checkCache(req.originalUrl)
+    // if (value !== null) {
+    //   return res.json(value.data).status(constants.NETWORK_CODES.HTTP_SUCCESS)
+    // }
+    let order = await getOrderDetails(req.params.order_id, true)
+   
     if (order === null) {
       return res.status(constants.NETWORK_CODES.HTTP_BAD_REQUEST).json({
         code: globalFunc.getKeyByValue(constants.ERROR_CODES, constants.ERROR_CODES.ORD_02),
@@ -123,7 +123,9 @@ function getShortDetails () {
         field
       })
     }
-    let orderObject = order.data
+  
+    let orderObject = order.data.dataValues
+
     let shortDetails = {
       order_id: orderObject.order_id,
       total_amount: orderObject.total_amount,
@@ -132,6 +134,8 @@ function getShortDetails () {
       status: orderObject.status,
       name: orderObject.name
     }
+
+    //shortDetails = globalFunc.convertObjectValuesRecursive(shortDetails, null, '')
     cache.addToCache(req.originalUrl, shortDetails, constants.CACHE_TYPES.hour)
     return res.json(shortDetails).status(constants.NETWORK_CODES.HTTP_SUCCESS)
   })

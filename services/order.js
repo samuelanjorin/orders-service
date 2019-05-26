@@ -24,7 +24,7 @@ async function getOrderDetailsByOrderId (order_id) {
   )
 }
 async function getShortOrderByOrderId (order_id) {
-  return await order_detail.findOne({
+  return await orders.findOne({
     where: {
       order_id
     }
