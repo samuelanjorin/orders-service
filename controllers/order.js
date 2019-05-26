@@ -10,7 +10,6 @@ import format from '../utils/format'
 
 let field = 'order_id'
 function getCustomersOrders (req) {
-  console.log('Testing ', req)
   return asyncF(async (req, res) => {
     const { customer_id } = req.user
     const customerOrders = await service.getOrderByCustomerId(customer_id)
@@ -26,31 +25,31 @@ function getCustomersOrders (req) {
 }
 function createOrder () {
   return asyncF(async (req, res) => {
-    const { body: { cart, shipping_id, tax_id }, user: { customer_id } } = req
-    // let cart = {
-    //   data: [
-    //     {
-    //       'item_id': 2,
-    //       'name': "Arc d'Triomphe",
-    //       'attributes': 'LG, red',
-    //       'product_id': 2,
-    //       'price': '14.99',
-    //       'quantity': 1,
-    //       'image': 'arc-d-triomphe.gif',
-    //       'subtotal': '14.99'
-    //     },
-    //     {
-    //       'item_id': 3,
-    //       'name': "Arc d'Triomphe",
-    //       'attributes': 'LG, red',
-    //       'product_id': 3,
-    //       'price': '14.99',
-    //       'quantity': 1,
-    //       'image': 'arc-d-triomphe.gif',
-    //       'subtotal': '28.99'
-    //     }
-    //   ]
-    // }
+    const { body: { shipping_id, tax_id }, user: { customer_id } } = req
+    let cart = {
+      data: [
+        {
+          'item_id': 2,
+          'name': "Arc d'Triomphe",
+          'attributes': 'LG, red',
+          'product_id': 2,
+          'price': '14.99',
+          'quantity': 1,
+          'image': 'arc-d-triomphe.gif',
+          'subtotal': '14.99'
+        },
+        {
+          'item_id': 3,
+          'name': "Arc d'Triomphe",
+          'attributes': 'LG, red',
+          'product_id': 3,
+          'price': '14.99',
+          'quantity': 1,
+          'image': 'arc-d-triomphe.gif',
+          'subtotal': '28.99'
+        }
+      ]
+    }
 
     const totalAmount = cart.data.reduce((total_amount, item) => {
       return total_amount += item.quantity * item.price
@@ -76,10 +75,10 @@ function createOrder () {
 
 function getOrderById () {
   return asyncF(async (req, res) => {
-    // let value = await cache.checkCache(req.originalUrl)
-    // if (value !== null) {
-    //   return res.json(value).status(constants.NETWORK_CODES.HTTP_SUCCESS)
-    // }
+    let value = await cache.checkCache(req.originalUrl)
+    if (value !== null) {
+      return res.json(value.data).status(constants.NETWORK_CODES.HTTP_SUCCESS)
+    }
 
     let order = await getOrderDetails(req.params.order_id)
 
@@ -90,7 +89,6 @@ function getOrderById () {
         field
       })
     }
-    console.log(order)
 
     if (order === 'NotValid') {
       return res.status(constants.NETWORK_CODES.HTTP_BAD_REQUEST).json({
@@ -100,14 +98,14 @@ function getOrderById () {
       })
     }
     cache.addToCache(req.originalUrl, order, constants.CACHE_TYPES.hour)
-    return res.json(order).status(constants.NETWORK_CODES.HTTP_SUCCESS)
+    return res.json(order.data).status(constants.NETWORK_CODES.HTTP_SUCCESS)
   })
 }
 function getShortDetails () {
   return asyncF(async (req, res) => {
     let value = await cache.checkCache(req.originalUrl)
     if (value !== null) {
-      return res.json(value).status(constants.NETWORK_CODES.HTTP_SUCCESS)
+      return res.json(value.data).status(constants.NETWORK_CODES.HTTP_SUCCESS)
     }
 
     let order = getOrderDetails(req.param.order_id)
@@ -125,18 +123,31 @@ function getShortDetails () {
         field
       })
     }
-    let shortDetails = { order_id, total_amount, created_on, shipped_on, status }
-    shortDetails = order
+    let orderObject = order.data
+    let shortDetails = {
+      order_id: orderObject.order_id,
+      total_amount: orderObject.total_amount,
+      created_on: orderObject.created_on,
+      shipped_on: orderObject.shipped_on,
+      status: orderObject.status,
+      name: orderObject.name
+    }
     cache.addToCache(req.originalUrl, shortDetails, constants.CACHE_TYPES.hour)
     return res.json(shortDetails).status(constants.NETWORK_CODES.HTTP_SUCCESS)
   })
 }
-async function getOrderDetails (order_id) {
+async function getOrderDetails (order_id, short = false) {
   if (globalFunc.isValueValid(order_id).valid) {
-    const orders = await service.getOrderDetailsByOrderId(order_id)
+    let orders
+    if (short) {
+      orders = await service.getShortOrderByOrderId(order_id)
+    } else {
+      orders = await service.getOrderDetailsByOrderId(order_id)
+    }
 
     if (!isEmpty(orders)) {
-      return orders.dataValues
+      let order = { data: orders }
+      return order
     }
     return null
   }

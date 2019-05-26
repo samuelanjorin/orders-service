@@ -16,6 +16,14 @@ async function getOrderByCustomerId (id) {
   )
 }
 async function getOrderDetailsByOrderId (order_id) {
+  return await order_detail.findAll({
+    where: {
+      order_id
+    }
+  }
+  )
+}
+async function getShortOrderByOrderId (order_id) {
   return await order_detail.findOne({
     where: {
       order_id
@@ -39,5 +47,6 @@ export default {
   createOrders,
   getOrderByCustomerId,
   getOrderDetailsByOrderId,
+  getShortOrderByOrderId,
   createOrderDetails
 }
