@@ -1,0 +1,47 @@
+{
+  "name": "turing-orders-service",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "NODE_ENV=dev jest",
+    "serve": "nodemon index.js --exec babel-node",
+    "compile": "babel src --out-dir .compiled --source-maps --watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/cli": "^7.4.4",
+    "@babel/core": "^7.4.4",
+    "@babel/node": "^7.2.2",
+    "@babel/preset-env": "^7.4.4",
+    "eslint": "^5.16.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.17.3",
+    "eslint-plugin-node": "^9.1.0",
+    "eslint-plugin-promise": "^4.1.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "jest": "^24.8.0",
+    "nodemon": "^1.19.0",
+    "rimraf": "^2.6.3"
+  },
+  "dependencies": {
+    "axios": "^0.18.0",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
+    "dotenv": "^8.0.0",
+    "express": "^4.17.0",
+    "express-rate-limit": "^4.0.1",
+    "helmet": "^3.18.0",
+    "joi": "^14.3.1",
+    "jsonwebtoken": "^8.5.1",
+    "morgan": "^1.9.1",
+    "mysql2": "^1.6.5",
+    "redis": "^2.8.0",
+    "sequelize": "^5.8.6",
+    "sequelize-cli": "^5.4.0",
+    "shortid": "^2.2.14",
+    "winston": "^3.2.1"
+  }
+}
