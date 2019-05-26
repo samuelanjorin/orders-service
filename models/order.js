@@ -20,6 +20,9 @@ export default (sequelize, Sequelize) => {
     status: {
       type: Sequelize.STRING
     },
+    customer_id: {
+      type: Sequelize.INTEGER
+    },
     comments: {
       type: Sequelize.STRING
     },

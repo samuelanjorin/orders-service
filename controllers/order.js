@@ -9,7 +9,7 @@ import cache from '../utils/cache'
 import format from '../utils/format'
 
 let field = 'order_id'
-function getCustomersOrders (req) {
+function getCustomersOrders () {
   return asyncF(async (req, res) => {
     const { customer_id } = req.user
     const customerOrders = await service.getOrderByCustomerId(customer_id)
@@ -50,7 +50,6 @@ function createOrder () {
         }
       ]
     }
-
     const totalAmount = cart.data.reduce((total_amount, item) => {
       return total_amount += item.quantity * item.price
     }, 0)
@@ -108,7 +107,7 @@ function getShortDetails () {
     //   return res.json(value.data).status(constants.NETWORK_CODES.HTTP_SUCCESS)
     // }
     let order = await getOrderDetails(req.params.order_id, true)
-   
+
     if (order === null) {
       return res.status(constants.NETWORK_CODES.HTTP_BAD_REQUEST).json({
         code: globalFunc.getKeyByValue(constants.ERROR_CODES, constants.ERROR_CODES.ORD_02),
@@ -123,7 +122,7 @@ function getShortDetails () {
         field
       })
     }
-  
+
     let orderObject = order.data.dataValues
 
     let shortDetails = {
@@ -135,7 +134,7 @@ function getShortDetails () {
       name: orderObject.name
     }
 
-    //shortDetails = globalFunc.convertObjectValuesRecursive(shortDetails, null, '')
+    // shortDetails = globalFunc.convertObjectValuesRecursive(shortDetails, null, '')
     cache.addToCache(req.originalUrl, shortDetails, constants.CACHE_TYPES.hour)
     return res.json(shortDetails).status(constants.NETWORK_CODES.HTTP_SUCCESS)
   })

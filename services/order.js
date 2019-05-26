@@ -5,13 +5,10 @@ import db from '../models/index'
 const { orders, order_detail } = db
 
 async function getOrderByCustomerId (id) {
-  return await orders.findOne({
+  return await orders.findAll({
     where: {
       customer_id: id
-    },
-    include: [{
-      model: order_detail
-    }]
+    }
   }
   )
 }
