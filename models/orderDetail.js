@@ -1,3 +1,5 @@
+/* eslint-disable no-sequences */
+/* eslint-disable no-unused-expressions */
 export default (sequelize, Sequelize) => {
   const orderDetailSchema = {
     item_id: {

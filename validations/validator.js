@@ -1,5 +1,5 @@
 import Joi from 'joi'
-import constants from '../constants'
+import constants from '../constants/index'
 import globalfunc from '../utils/globalfunc'
 
 /**

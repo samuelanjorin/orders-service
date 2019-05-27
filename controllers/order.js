@@ -25,32 +25,8 @@ function getCustomersOrders () {
 }
 function createOrder () {
   return asyncF(async (req, res) => {
-    const { body: { shipping_id, tax_id }, user: { customer_id } } = req
-    let cart = {
-      data: [
-        {
-          'item_id': 2,
-          'name': "Arc d'Triomphe",
-          'attributes': 'LG, red',
-          'product_id': 2,
-          'price': '14.99',
-          'quantity': 1,
-          'image': 'arc-d-triomphe.gif',
-          'subtotal': '14.99'
-        },
-        {
-          'item_id': 3,
-          'name': "Arc d'Triomphe",
-          'attributes': 'LG, red',
-          'product_id': 3,
-          'price': '14.99',
-          'quantity': 1,
-          'image': 'arc-d-triomphe.gif',
-          'subtotal': '28.99'
-        }
-      ]
-    }
-    const totalAmount = cart.data.reduce((total_amount, item) => {
+    const { cart, body: { shipping_id, tax_id }, user: { customer_id } } = req
+    const totalAmount = cart.reduce((total_amount, item) => {
       return total_amount += item.quantity * item.price
     }, 0)
     const order = await service.createOrders({
@@ -61,7 +37,7 @@ function createOrder () {
       created_on: new Date()
     })
     let order_id = order.get('order_id')
-    let items = format.prepareItems(cart.data, order_id)
+    let items = format.prepareItems(cart, order_id)
 
     console.log(items)
     await service.createOrderDetails(items)
@@ -102,10 +78,10 @@ function getOrderById () {
 }
 function getShortDetails () {
   return asyncF(async (req, res) => {
-    // let value = await cache.checkCache(req.originalUrl)
-    // if (value !== null) {
-    //   return res.json(value.data).status(constants.NETWORK_CODES.HTTP_SUCCESS)
-    // }
+    let value = await cache.checkCache(req.originalUrl)
+    if (value !== null) {
+      return res.json(value).status(constants.NETWORK_CODES.HTTP_SUCCESS)
+    }
     let order = await getOrderDetails(req.params.order_id, true)
 
     if (order === null) {

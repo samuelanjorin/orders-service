@@ -9,6 +9,6 @@ let redisConfig = {
   db: process.env.REDIS_DB || 'turing'
 }
 export default redis.createClient(redisConfig.port, redisConfig.host, {
-  password: redisConfig.password //, 
-  //  db:redisConfig.db
+  password: redisConfig.password
+
 })

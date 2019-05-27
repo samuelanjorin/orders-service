@@ -1,5 +1,6 @@
 import axios from 'axios'
 import logger from './errors/errorlogger'
+import constants from '../constants/index'
 /**
  * @description handles post requests
  *
@@ -30,15 +31,17 @@ const postRequest = function (url, headers, formData) {
  * @param {Object} header
  * @returns {Object}  JSON
  */
-const getRequest = async function (url, headers) {
+const getRequest = async function (url) {
   try {
-    let headersConfig = {
-      headers
+    // let headersConfig = {
+    //   headers
+    // }
+
+    let response = await axios.get(url)
+    if (response.status === constants.NETWORK_CODES.HTTP_SUCCESS) {
+      return response.data
     }
-
-    let response = await axios.get(url, headersConfig)
-
-    return response
+    return null
   } catch (err) {
     // logger.error(err)
   }

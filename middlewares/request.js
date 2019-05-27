@@ -28,13 +28,13 @@ export async function getShipping (req, res, next) {
   return next()
 }
 
-export function getCart (req, res, next) {
+export async function getCart (req, res, next) {
   const { cart_id } = req.body
   const { user_key } = req.headers
 
-  let cart = getData(
+  let cart = await getData(
     `/v1/api/shoppingcart/${cart_id}`,
-    envConfig.cartUrl + `/${cart_id}`,
+    envConfig.shoppingCartUrl + `/${cart_id}`,
     user_key
   )
   req.cart = cart
@@ -42,19 +42,15 @@ export function getCart (req, res, next) {
 }
 
 async function getData (key, url, user_key) {
-  let response = await cache.checkCache(key)
-  if (response == null) {
-    let header = {
-      user_key
-    }
-    response = await network.getRequest(url, header)
-
-    if (!isEmpty(response.data)) {
+  // let response = await cache.checkCache(key)
+  let response = null
+  if (response === null) {
+    response = await network.getRequest(url)
+    if (isEmpty(response)) {
       return null
     }
-
-    cache.addToCache(key, response.data, constants.CACHE_TYPES.hour)
-    response = response.data
+    cache.addToCache(key, response, constants.CACHE_TYPES.hour)
   }
+
   return response
 }
