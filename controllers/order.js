@@ -1,6 +1,5 @@
 /* eslint-disable no-return-assign */
 /* eslint-disable camelcase */
-import isEmpty from 'lodash.isempty'
 import service from '../services/order'
 import asyncF from '../middlewares/async'
 import globalFunc from '../utils/globalfunc'
@@ -13,7 +12,7 @@ function getCustomersOrders () {
   return asyncF(async (req, res) => {
     const { customer_id } = req.user
     const customerOrders = await service.getOrderByCustomerId(customer_id)
-    if (!isEmpty(customerOrders)) {
+    if (customerOrders !== null) {
       return res.json(customerOrders).status(constants.NETWORK_CODES.HTTP_SUCCESS)
     }
     return res.status(constants.NETWORK_CODES.HTTP_BAD_REQUEST).json({
@@ -36,10 +35,11 @@ function createOrder () {
       customer_id,
       created_on: new Date()
     })
+    if(order !== null){
+
+    }
     let order_id = order.get('order_id')
     let items = format.prepareItems(cart, order_id)
-
-    console.log(items)
     await service.createOrderDetails(items)
     const orderKey = {
       orderId: order_id
@@ -124,7 +124,7 @@ async function getOrderDetails (order_id, short = false) {
       orders = await service.getOrderDetailsByOrderId(order_id)
     }
 
-    if (!isEmpty(orders)) {
+    if (orders !== null) {
       let order = { data: orders }
       return order
     }

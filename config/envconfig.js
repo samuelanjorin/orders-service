@@ -17,7 +17,9 @@ const {
   REDIS_PORT,
   TAX_URL,
   SHIPPING_URL,
-  SHOPPING_CART_URL
+  SHOPPING_CART_URL,
+  AMQP_URL,
+  QUEUE_NAME
 } = process.env
 
 export default {
@@ -45,7 +47,9 @@ export default {
   },
   taxUrl: TAX_URL,
   shippingUrl: SHIPPING_URL,
-  shoppingCartUrl: SHOPPING_CART_URL
+  shoppingCartUrl: SHOPPING_CART_URL,
+  rabbitMQURL: AMQP_URL,
+  queueName: QUEUE_NAME
 
 
 }

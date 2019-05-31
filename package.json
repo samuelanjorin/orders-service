@@ -39,6 +39,7 @@
     "morgan": "^1.9.1",
     "mysql2": "^1.6.5",
     "redis": "^2.8.0",
+    "lodash.isempty": "^4.4.0",
     "sequelize": "^5.8.6",
     "sequelize-cli": "^5.4.0",
     "shortid": "^2.2.14",
