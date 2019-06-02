@@ -23,15 +23,21 @@ const {
 } = process.env
 
 export default {
-  database: {
+  development: {
     name: DATABASE_NAME,
     username: DATABASE_USERNAME,
     host: DATABASE_HOST,
     password: DATABASE_PASSWORD,
     dialect: DIALECT
   },
-
-  unitTestDatabase: {
+  production: {
+    name: DATABASE_NAME,
+    username: DATABASE_USERNAME,
+    host: DATABASE_HOST,
+    password: DATABASE_PASSWORD,
+    dialect: DIALECT
+  },
+  test: {
     dbName: TEST_DATABASE_NAME,
     host: TEST_DATABASE_HOST,
     password: TEST_DATABASE_PASSWORD,
