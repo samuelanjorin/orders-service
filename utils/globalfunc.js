@@ -3,6 +3,7 @@ import networkRequest from '../utils/networkRequest'
 import envconfig from '../config/envconfig'
 import logger from '../utils/errors/errorlogger'
 import rabbitmq from '../config/rabbitmq'
+import Email from 'email-templates'
 
 function getKeyByValue (object, value) {
   return Object.keys(object).find(key => object[key] === value)
@@ -51,6 +52,7 @@ function getToken (req) {
   return userKey[1]
 }
 function buildNotificationPayload (customer, cart) {
+  const email = new Email()
   let msg = {
     notification_type: 'EMAIL',
     payload: {
