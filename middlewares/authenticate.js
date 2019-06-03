@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 import jwt from 'jsonwebtoken'
 import constants from '../constants'
-import globalFunctions from '../utils/globalFunc'
+import globalFunctions from '../utils/globalfunc'
 import envconfig from '../config/envconfig'
 
 const verifyUser = (req, res, next) => {
