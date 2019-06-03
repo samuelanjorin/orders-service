@@ -31,19 +31,24 @@ const postRequest = function (url, headers, formData) {
  * @param {Object} header
  * @returns {Object}  JSON
  */
-const getRequest = async function (url) {
+const getRequest = async function (url, headers) {
   try {
-    // let headersConfig = {
-    //   headers
-    // }
-
-    let response = await axios.get(url)
+    let response
+    let headersConfig
+    if (headers) {
+      headersConfig = {
+        headers
+      }
+      response = await axios.get(url, headersConfig)
+    } else {
+      response = await axios.get(url)
+    }
     if (response.status === constants.NETWORK_CODES.HTTP_SUCCESS) {
       return response.data
     }
     return null
   } catch (err) {
-    // logger.error(err)
+    logger.error(err)
   }
 }
 

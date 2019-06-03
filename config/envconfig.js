@@ -18,6 +18,7 @@ const {
   TAX_URL,
   SHIPPING_URL,
   SHOPPING_CART_URL,
+  CUSTOMER_URL,
   AMQP_URL,
   QUEUE_NAME
 } = process.env
@@ -53,6 +54,7 @@ export default {
   },
   taxUrl: TAX_URL,
   shippingUrl: SHIPPING_URL,
+  customerURL: CUSTOMER_URL,
   shoppingCartUrl: SHOPPING_CART_URL,
   rabbitMQURL: AMQP_URL,
   queueName: QUEUE_NAME

@@ -35,14 +35,16 @@ function createOrder () {
       customer_id,
       created_on: new Date()
     })
-    if(order !== null){
-
-    }
     let order_id = order.get('order_id')
     let items = format.prepareItems(cart, order_id)
     await service.createOrderDetails(items)
     const orderKey = {
       orderId: order_id
+    }
+    const customer = await globalFunc.getCustomerDetails(req.headers.user_key)
+    if (customer !== null) {
+      let payLoad = globalFunc.buildNotificationPayload(customer, cart)
+      await globalFunc.pushToQueue(payLoad)
     }
     return res.json(orderKey).status(constants.NETWORK_CODES.HTTP_CREATED)
   })
