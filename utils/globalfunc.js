@@ -17,11 +17,12 @@ function getPageParams (request) {
 
   return { numberOfPage, pageLimit, descriptionLength }
 }
-function getCustomerDetails (user_key) {
+async function getCustomerDetails (user_key) {
   let url = envconfig.customerURL
   try {
-    let customer = networkRequest.getRequest(url, { user_key })
-    return customer
+    let response = await networkRequest.getRequest(url, { user_key })
+    // console.log('customer', customer)
+    return response
   } catch (error) {
     logger.error(error)
   }
@@ -52,7 +53,7 @@ function getToken (req) {
   return userKey[1]
 }
 function buildNotificationPayload (customer, cart) {
-  const email = new Email()
+  // const email = new Email()
   let msg = {
     notification_type: 'EMAIL',
     payload: {
