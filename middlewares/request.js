@@ -1,56 +1,52 @@
 /* eslint-disable camelcase */
-import isEmpty from 'lodash.isempty'
-import cache from '../utils/cache'
 import network from '../utils/networkRequest'
 import envConfig from '../config/envconfig'
 import constants from '../constants'
-
-export function getTax (req, res, next) {
-  const { tax_id } = req.body
-  const { user_key } = req.headers
-  let tax = getData(
-    `/v1/api/tax/${tax_id}`,
-    envConfig.taxUrl + `/${tax_id}`,
-    user_key
-  )
-  req.tax = tax
-  return next()
-}
-export async function getShipping (req, res, next) {
-  const { shipping_id } = req.body
-  const { user_key } = req.headers
-  let shipping = await getData(
-    `/v1/api/shippings/regions/${shipping_id}`,
-    envConfig.shippingUrl + `/${shipping_id}`,
-    user_key
-  )
-  req.shipping = shipping
-  return next()
-}
+import logger from '../utils/errors/errorlogger'
+import globalFunc from '../utils/globalfunc'
 
 export async function getCart (req, res, next) {
   const { cart_id } = req.body
   const { user_key } = req.headers
 
-  let cart = await getData(
-    `/v1/api/shoppingcart/${cart_id}`,
-    envConfig.shoppingCartUrl + `/${cart_id}`,
-    user_key
-  )
-  req.cart = cart
-  return next()
+  try {
+    let response = await getData(
+      `/v1/api/shoppingcart/${cart_id}`,
+      envConfig.shoppingCartUrl + `/${cart_id}`,
+      user_key
+    )
+    if (response.status !== constants.NETWORK_CODES.HTTP_SUCCESS) {
+      if (response.status === constants.NETWORK_CODES.HTTP_BAD_REQUEST) {
+        return res.status(constants.NETWORK_CODES.HTTP_BAD_REQUEST).json({
+          code: globalFunc.getKeyByValue(constants.ERROR_CODES, constants.ERROR_CODES.ORD_03),
+          message: response.data.message,
+          field: 'cart_id'
+        })
+      }
+      return res.status(constants.NETWORK_CODES.HTTP_BAD_REQUEST).json({
+        code: globalFunc.getKeyByValue(constants.ERROR_CODES, constants.ERROR_CODES.ORD_03),
+        message: 'Communication Error',
+        field: 'cart_id'
+      })
+    }
+    req.cart = response.data
+    return next()
+  } catch (error) {
+    logger.error(error)
+    return res.status(constants.NETWORK_CODES.HTTP_BAD_REQUEST).json({
+      code: globalFunc.getKeyByValue(constants.ERROR_CODES, constants.ERROR_CODES.ORD_03),
+      message: constants.ERROR_CODES.ORD_03 + ' --',
+      field: 'cart_id'
+    })
+  }
 }
 
 async function getData (key, url, user_key) {
-  // let response = await cache.checkCache(key)
-  let response = null
-  if (response === null) {
-    response = await network.getRequest(url)
-    if (isEmpty(response)) {
-      return null
-    }
-    cache.addToCache(key, response, constants.CACHE_TYPES.hour)
+  let response = await network.getRequest(url)
+  if (response.status === 200) {
+    console.log(response)
+    return response
+  } else {
+    return response
   }
-
-  return response
 }

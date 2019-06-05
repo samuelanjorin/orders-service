@@ -2,7 +2,7 @@ import { Router } from 'express'
 import controller from '../controllers/order'
 import authenticate from '../middlewares/authenticate'
 import { getCart } from '../middlewares/request'
-import validate from '../middlewares/validateRequest'
+import validate from '../middlewares/validator'
 
 const router = Router()
 
