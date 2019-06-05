@@ -24,6 +24,7 @@ function getCustomersOrders () {
 }
 function createOrder () {
   return asyncF(async (req, res) => {
+    console.log('hello, I got here')
     const { cart, body: { shipping_id, tax_id }, user: { customer_id } } = req
     const totalAmount = cart.reduce((total_amount, item) => {
       return total_amount += item.quantity * item.price
