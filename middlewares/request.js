@@ -44,7 +44,6 @@ export async function getCart (req, res, next) {
 async function getData (key, url, user_key) {
   let response = await network.getRequest(url)
   if (response.status === 200) {
-    console.log(response)
     return response
   } else {
     return response
