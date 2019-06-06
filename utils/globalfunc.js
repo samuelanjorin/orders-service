@@ -3,7 +3,7 @@ import networkRequest from '../utils/networkRequest'
 import envconfig from '../config/envconfig'
 import logger from '../utils/errors/errorlogger'
 import rabbitmq from '../config/rabbitmq'
-import Email from 'email-templates'
+import emailInvoice from './invoice'
 
 function getKeyByValue (object, value) {
   return Object.keys(object).find(key => object[key] === value)
@@ -21,7 +21,6 @@ async function getCustomerDetails (user_key) {
   let url = envconfig.customerURL
   try {
     let response = await networkRequest.getRequest(url, { user_key })
-    // console.log('customer', customer)
     return response
   } catch (error) {
     logger.error(error)
@@ -32,7 +31,6 @@ async function emptyCart (cart_id) {
   let url = envconfig.emptyCartURL + '/' + cart_id
   try {
     let response = await networkRequest.deleteRequest(url)
-    // console.log('customer', customer)
     return response
   } catch (error) {
     logger.error(error)
@@ -64,22 +62,40 @@ function getToken (req) {
   return userKey[1]
 }
 function buildNotificationPayload (customer, cart) {
-  // const email = new Email()
+  const itemArray = []
+  cart.forEach((item) => {
+    itemArray.push({
+      itemId: item.item_id,
+      name: item.name,
+      attributes: item.attributes,
+      price: item.price,
+      quantity: item.quantity,
+      subtotal: item.subtotal
+      
+    })
+  })
+  let data = {
+    name: customer.name,
+    order: itemArray
+  }
+  let html = emailInvoice(data)
+  // html = Buffer.from(html).toString('base64')
   let msg = {
     notification_type: 'EMAIL',
     payload: {
       to: customer.email,
-      from: 'samelikzra@gmail.com',
+      from: 'samuelanjorin12@gmail.com',
       subject: 'ORDER DETAILS',
-      text: 'FROM CODE',
-      html: '<strong>We are fine</strong>'
+      text: 'Invoice Detials',
+      html: html
+      
     }
   }
   return JSON.stringify(msg)
 }
 
 async function pushToQueue (msg) {
-  rabbitmq(msg)
+  await rabbitmq(msg)
 }
 
 export default { buildNotificationPayload,

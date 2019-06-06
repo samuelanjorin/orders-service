@@ -60,6 +60,4 @@ export default {
   rabbitMQURL: AMQP_URL,
   emptyCartURL: EMPTY_CART_URL,
   queueName: QUEUE_NAME
-
-
 }

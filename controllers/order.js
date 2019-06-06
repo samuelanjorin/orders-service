@@ -24,7 +24,7 @@ function getCustomersOrders () {
 }
 function createOrder () {
   return asyncF(async (req, res) => {
-    const { cart, body: { shipping_id, tax_id, cart_id }, user: { customer_id } } = req
+    const { cart, body: { shipping_id, tax_id }, user: { customer_id } } = req
     const totalAmount = cart.reduce((total_amount, item) => {
       return total_amount += item.quantity * item.price
     }, 0)
@@ -41,12 +41,12 @@ function createOrder () {
     const orderKey = {
       orderId: order_id
     }
-    globalFunc.emptyCart(cart_id)
+
     const response = await globalFunc.getCustomerDetails(req.headers.user_key)
     if (response !== null) {
       if (response.status === constants.NETWORK_CODES.HTTP_SUCCESS) {
-        let payLoad = globalFunc.buildNotificationPayload(response.data, cart)
-        await globalFunc.pushToQueue(payLoad)
+        let msg = await globalFunc.buildNotificationPayload(response.data, cart)
+        await globalFunc.pushToQueue(msg)
       }
     }
     return res.json(orderKey).status(constants.NETWORK_CODES.HTTP_CREATED)
