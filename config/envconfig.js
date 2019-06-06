@@ -18,20 +18,27 @@ const {
   TAX_URL,
   SHIPPING_URL,
   SHOPPING_CART_URL,
+  CUSTOMER_URL,
   AMQP_URL,
   QUEUE_NAME
 } = process.env
 
 export default {
-  database: {
+  development: {
     name: DATABASE_NAME,
     username: DATABASE_USERNAME,
     host: DATABASE_HOST,
     password: DATABASE_PASSWORD,
     dialect: DIALECT
   },
-
-  unitTestDatabase: {
+  production: {
+    name: DATABASE_NAME,
+    username: DATABASE_USERNAME,
+    host: DATABASE_HOST,
+    password: DATABASE_PASSWORD,
+    dialect: DIALECT
+  },
+  test: {
     dbName: TEST_DATABASE_NAME,
     host: TEST_DATABASE_HOST,
     password: TEST_DATABASE_PASSWORD,
@@ -47,6 +54,7 @@ export default {
   },
   taxUrl: TAX_URL,
   shippingUrl: SHIPPING_URL,
+  customerURL: CUSTOMER_URL,
   shoppingCartUrl: SHOPPING_CART_URL,
   rabbitMQURL: AMQP_URL,
   queueName: QUEUE_NAME
