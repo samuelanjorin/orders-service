@@ -49,4 +49,23 @@ const getRequest = async function (url, headers) {
   }
 }
 
-export default { postRequest, getRequest }
+const deleteRequest = async function (url, headers) {
+  try {
+    let response
+    let headersConfig
+    if (headers) {
+      headersConfig = {
+        headers
+      }
+      response = await axios.delete(url, headersConfig)
+    } else {
+      response = await axios.delete(url)
+    }
+    return response
+  } catch (err) {
+    logger.error(err)
+    return err.response
+  }
+}
+
+export default { postRequest, getRequest, deleteRequest }

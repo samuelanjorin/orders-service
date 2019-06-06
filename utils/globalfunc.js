@@ -28,6 +28,17 @@ async function getCustomerDetails (user_key) {
   }
 }
 
+async function emptyCart (cart_id) {
+  let url = envconfig.emptyCartURL + '/' + cart_id
+  try {
+    let response = await networkRequest.deleteRequest(url)
+    // console.log('customer', customer)
+    return response
+  } catch (error) {
+    logger.error(error)
+  }
+}
+
 const isValueValid = (id) => {
   let valid = false
   const parsedId = parseInt(id, 10)
@@ -71,4 +82,12 @@ async function pushToQueue (msg) {
   rabbitmq(msg)
 }
 
-export default { buildNotificationPayload, getCustomerDetails, getKeyByValue, getPageParams, isValueValid, convertObjectValuesRecursive, getToken, pushToQueue }
+export default { buildNotificationPayload,
+  getCustomerDetails,
+  getKeyByValue,
+  getPageParams,
+  isValueValid,
+  convertObjectValuesRecursive,
+  getToken,
+  pushToQueue,
+  emptyCart }

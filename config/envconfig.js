@@ -19,6 +19,7 @@ const {
   SHIPPING_URL,
   SHOPPING_CART_URL,
   CUSTOMER_URL,
+  EMPTY_CART_URL,
   AMQP_URL,
   QUEUE_NAME
 } = process.env
@@ -57,6 +58,7 @@ export default {
   customerURL: CUSTOMER_URL,
   shoppingCartUrl: SHOPPING_CART_URL,
   rabbitMQURL: AMQP_URL,
+  emptyCartURL: EMPTY_CART_URL,
   queueName: QUEUE_NAME
 
 
