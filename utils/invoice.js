@@ -18,11 +18,11 @@ var mailGenerator = new Mailgen({
 * @returns {HTMLElement}e mailGenEmailTemplate
 */
 const emailTemplate = (data) => {
-  console.log(data)
   const emailBody = {
     body: {
       name: data.name,
       intro: ['Find your order details below:'],
+      outro: 'Total Amount: $' + data.totalSum,
       table: {
         data: data.order,
         columns: {
@@ -32,8 +32,7 @@ const emailTemplate = (data) => {
             name: '25%',
             attributes: '10%',
             quantity: '15%',
-            price: '10%',
-            subtotal: '30%'
+            price: '10%'
 
           }
         }

@@ -63,23 +63,27 @@ function getToken (req) {
 }
 function buildNotificationPayload (customer, cart) {
   const itemArray = []
+  let totalSum = 0
   cart.forEach((item) => {
     itemArray.push({
       itemId: item.item_id,
       name: item.name,
       attributes: item.attributes,
-      price: item.price,
-      quantity: item.quantity,
-      subtotal: item.subtotal
-      
+      price: '$' + item.price,
+      quantity: item.quantity
+
     })
+    if (totalSum < item.subtotal) {
+      totalSum = item.subtotal
+    }
   })
   let data = {
     name: customer.name,
-    order: itemArray
+    order: itemArray,
+    totalSum
   }
   let html = emailInvoice(data)
-  // html = Buffer.from(html).toString('base64')
+
   let msg = {
     notification_type: 'EMAIL',
     payload: {
@@ -88,7 +92,7 @@ function buildNotificationPayload (customer, cart) {
       subject: 'ORDER DETAILS',
       text: 'Invoice Detials',
       html: html
-      
+
     }
   }
   return JSON.stringify(msg)
