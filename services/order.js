@@ -1,6 +1,7 @@
 /* eslint-disable no-return-await */
 /* eslint-disable camelcase */
 import db from '../models/index'
+import logger from '../utils/errors/errorlogger'
 
 const { orders, order_detail } = db
 
@@ -28,6 +29,16 @@ async function getShortOrderByOrderId (order_id) {
   }
   )
 }
+async function updateOrderPaymentDetails (order_id) {
+  try {
+    await orders.update(
+      { status: 1 },
+      { returning: true, where: { order_id } }
+    )
+  } catch (error) {
+    logger.error(error.errors[0].Error)
+  }
+}
 
 async function createOrders (payLoad) {
   return await orders.create(payLoad)
@@ -45,5 +56,7 @@ export default {
   getOrderByCustomerId,
   getOrderDetailsByOrderId,
   getShortOrderByOrderId,
-  createOrderDetails
+  createOrderDetails,
+  updateOrderPaymentDetails
+
 }

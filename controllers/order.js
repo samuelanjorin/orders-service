@@ -121,6 +121,12 @@ function getShortDetails () {
     return res.json(shortDetails).status(constants.NETWORK_CODES.HTTP_SUCCESS)
   })
 }
+function confirmPayment () {
+  return asyncF(async (req, res) => {
+    await service.updateOrderPaymentDetails(req.params.order_id)
+    return res.json('Success').status(constants.NETWORK_CODES.HTTP_SUCCESS)
+  })
+}
 async function getOrderDetails (order_id, short = false) {
   if (globalFunc.isValueValid(order_id).valid) {
     let orders
@@ -143,5 +149,6 @@ export default {
   getCustomersOrders,
   createOrder,
   getOrderById,
-  getShortDetails
+  getShortDetails,
+  confirmPayment
 }
