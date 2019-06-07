@@ -1,0 +1,14 @@
+REDIS_HOST=Enter redis host e.g localhosy
+REDIS_PORT= e.g 6379
+TOKEN_EXPIRATION=24hr
+CLIENT_SECRET= token client secret
+DATABASE_NAME= Enter database name
+DATABASE_USERNAME= Database User
+DATABASE_HOST=Database Host
+DATABASE_PASSWORD=Database Password
+DIALECT=mysql
+AMQP_URL= RabbitMQ connection String
+QUEUE_NAME= RabbitMQ Queue name should be the same as Order- service queue name
+SHOPPING_CART_URL= Get Cart details URL e.g http://localhost:8000/shopping-carts-service/v1/api/shoppingcart
+CUSTOMER_URL=Get Customer details URL e.g http://localhost:8000/users-service/v1/api/customer 
+EMPTY_CART_URL = Empty Cart URL e.g http://localhost:8000/shopping-carts-service/v1/api/shoppingcart/empty
