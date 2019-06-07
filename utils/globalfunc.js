@@ -100,6 +100,7 @@ function buildNotificationPayload (customer, cart) {
 
 async function pushToQueue (msg) {
   await rabbitmq(msg)
+  logger.info('payload sent to notification service')
 }
 
 export default { buildNotificationPayload,
