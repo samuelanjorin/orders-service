@@ -12,7 +12,10 @@ const ERROR_CODES = Object.freeze({
   AUT_02: 'Access Unauthorized.',
   ORD_01: 'Order_id is empty',
   ORD_02: 'Order is empty',
-  ORD_03: 'Error! Unable to get Cart Details',
+  CRT_01: 'Error! Unable to get Cart Details',
+  SHP_01: 'Error! Unable to get Shipping Details',
+  SHP_02: 'Shipping Id not Valid',
+  TAX_01: 'Error! Unable to get Tax Details',
   TAX_02: 'Tax Id not Valid',
   NOAUTH: 'NoAuth'
 

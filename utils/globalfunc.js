@@ -4,6 +4,7 @@ import envconfig from '../config/envconfig'
 import logger from '../utils/errors/errorlogger'
 import rabbitmq from '../config/rabbitmq'
 import emailInvoice from './invoice'
+import constants from '../constants/index'
 
 function getKeyByValue (object, value) {
   return Object.keys(object).find(key => object[key] === value)
@@ -61,7 +62,7 @@ function getToken (req) {
   const userKey = user_key.split(' ')
   return userKey[1]
 }
-function buildNotificationPayload (customer, cart) {
+function buildNotificationPayload (customer, tax, shipping, cart) {
   const itemArray = []
   let totalSum = 0
   cart.forEach((item) => {
@@ -77,12 +78,20 @@ function buildNotificationPayload (customer, cart) {
       totalSum = item.subtotal
     }
   })
+  const taxAmount = ((parseFloat(tax.tax_percentage) * totalSum) / 100)
+  tax.amount = parseFloat(Math.round(taxAmount * 100) / 100).toFixed(2)
+  totalSum = totalSum + taxAmount + parseFloat(shipping.shipping_cost)
+  totalSum = parseFloat(Math.round(totalSum * 100) / 100).toFixed(2)
+
   let data = {
     name: customer.name,
+    tax,
+    shipping,
     order: itemArray,
     totalSum
   }
   let html = emailInvoice(data)
+  //  console.log(html)
 
   let msg = {
     notification_type: 'EMAIL',
@@ -102,6 +111,15 @@ async function pushToQueue (msg) {
   await rabbitmq(msg)
   logger.info('payload sent to notification service')
 }
+async function sendNotification (user_key, tax, shipping, cart) {
+  const response = await getCustomerDetails(user_key)
+  if (response !== null) {
+    if (response.status === constants.NETWORK_CODES.HTTP_SUCCESS) {
+      let msg = await buildNotificationPayload(response.data, tax, shipping, cart)
+      await pushToQueue(msg)
+    }
+  }
+}
 
 export default { buildNotificationPayload,
   getCustomerDetails,
@@ -110,5 +128,5 @@ export default { buildNotificationPayload,
   isValueValid,
   convertObjectValuesRecursive,
   getToken,
-  pushToQueue,
-  emptyCart }
+  emptyCart,
+  sendNotification }

@@ -24,32 +24,26 @@ function getCustomersOrders () {
 }
 function createOrder () {
   return asyncF(async (req, res) => {
-    const { cart, body: { shipping_id, tax_id, cart_id }, user: { customer_id } } = req
-    const totalAmount = cart.reduce((total_amount, item) => {
+    const { cart, shipping, tax, user: { customer_id }, body: { cart_id } } = req
+    let totalAmount = cart.reduce((total_amount, item) => {
       return total_amount += item.quantity * item.price
     }, 0)
     const order = await service.createOrders({
-      shipping_id,
-      tax_id,
+      shipping_id: shipping.shipping_id,
+      tax_id: tax.tax_id,
       total_amount: totalAmount,
       customer_id,
       created_on: new Date()
     })
     let order_id = order.get('order_id')
     let items = format.prepareItems(cart, order_id)
-    await service.createOrderDetails(items)
+    service.createOrderDetails(items)
     const orderKey = {
       orderId: order_id
     }
 
-    const response = await globalFunc.getCustomerDetails(req.headers.user_key)
-    if (response !== null) {
-      if (response.status === constants.NETWORK_CODES.HTTP_SUCCESS) {
-        let msg = await globalFunc.buildNotificationPayload(response.data, cart)
-        await globalFunc.pushToQueue(msg)
-      }
-    }
-    await globalFunc.emptyCart(cart_id)
+    globalFunc.sendNotification(req.headers.user_key, tax, shipping, cart)
+    globalFunc.emptyCart(cart_id)
     return res.json(orderKey).status(constants.NETWORK_CODES.HTTP_CREATED)
   })
 }

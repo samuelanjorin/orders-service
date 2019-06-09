@@ -22,7 +22,7 @@ const emailTemplate = (data) => {
     body: {
       name: data.name,
       intro: ['Find your order details below:'],
-      outro: 'Total Amount: $' + data.totalSum,
+      outro: [data.tax.tax_type + ' : $' + data.tax.amount, 'Shipping ' + data.shipping.shipping_type, 'Total Amount: $' + data.totalSum],
       table: {
         data: data.order,
         columns: {
